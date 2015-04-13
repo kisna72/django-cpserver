@@ -15,6 +15,19 @@ Usage
 
 Run ``./manage.py runcpserver help`` from within your project directory
 
+Serving Static Content
+=======================
+
+To serve out static content from your django app, be sure to add the static url as shown below in your urls.py file. 
+
+::
+
+	urlpatterns = patterns('',
+	    
+	    # url(r'^$', 'django_server.views.home', name='home'),
+	) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+
 Acknowledgements
 ================
 
