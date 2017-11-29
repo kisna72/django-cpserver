@@ -144,7 +144,8 @@ def stop_server(pidfile):
 
 def start_server(options):
     """
-    Start CherryPy server
+    Start CherryPy server. DEPRICATED>>>>
+    Saving this function for future readers to use. 
     """
     
     if options['daemonize'] and options['server_user'] and options['server_group']:
@@ -152,6 +153,7 @@ def start_server(options):
         change_uid_gid(options['server_user'], options['server_group'])
     
     from cherrypy.wsgiserver import CherryPyWSGIServer as Server
+    
     from django.core.handlers.wsgi import WSGIHandler
     server = Server(
         (options['host'], int(options['port'])),
@@ -167,6 +169,20 @@ def start_server(options):
     except KeyboardInterrupt:
         server.stop()
 
+
+def start_server_with_cheroot(options):
+    """CpServer has evolved, they added cheroot. Using it in this module. 
+    """
+    from cheroot import wsgi
+    from django.core.wsgi import get_wsgi_application
+    application = get_wsgi_application()
+
+    addr = (options['host'], int(options['port']) )
+    server = wsgi.Server(addr, application)
+    try:
+        server.start()
+    except KeyboardInterrupt:
+        server.stop()
 
 def runcpserver(argset=[], **kwargs):
     # Get the options
@@ -204,7 +220,8 @@ def runcpserver(argset=[], **kwargs):
     
     # Start the webserver
     print 'starting server with options %s' % options
-    start_server(options)
+    start_server_with_cheroot(options)
+    #start_server(options) This doesn't work with newer version of cherrypy. 
 
 
 if __name__ == '__main__':
